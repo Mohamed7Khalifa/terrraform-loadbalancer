@@ -4,23 +4,23 @@ resource "aws_security_group" "nginx-lab" {
     vpc_id = aws_vpc.iti-vpc.id
 
     ingress {
-        from_port        = 22
-        to_port          = 22
-        protocol         = "tcp"
-        cidr_blocks      = ["0.0.0.0/0"]
+        from_port        = var.security_group-ports["ssh"]
+        to_port          = var.security_group-ports["ssh"]
+        protocol         = var.security_group-protocol["ingress"] 
+        cidr_blocks      = [var.inbound-role-anywhere_ip]
     }
 
     ingress {
-            from_port        = 80
-            to_port          = 80
-            protocol         = "tcp"
-            cidr_blocks      = ["0.0.0.0/0"]
+        from_port        = var.security_group-ports["http"]
+        to_port          = var.security_group-ports["http"]
+        protocol         = var.security_group-protocol["ingress"]
+        cidr_blocks      = [var.inbound-role-anywhere_ip]
     }
+
     egress {
-        from_port        = 0
-        to_port          = 0
-        protocol         = "-1"
-        cidr_blocks      = ["0.0.0.0/0"]
-        ipv6_cidr_blocks = ["::/0"]
+        from_port        = var.security_group-ports["egress"]
+        to_port          = var.security_group-ports["egress"]
+        protocol         = var.security_group-protocol["egress"]
+        cidr_blocks      = [var.inbound-role-anywhere_ip]
     }
 }
