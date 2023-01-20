@@ -1,8 +1,9 @@
 ec2-metadata = {
-    "image" = "ami-06878d265978313ca"
-    "type" = "t2.micro"
-    "key_pair" = "nginx"
-  }
+  "image" = "ami-06878d265978313ca"
+  "type" = "t2.micro"
+  "key_pair" = "nginx"
+}
+
 provider-aws-region = "us-east-1"
 
 iti-vpc-cidr = "10.0.0.0/16"
