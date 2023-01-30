@@ -152,7 +152,7 @@ module "iti-public-load-balancer" {
   load-balancer-type = "application"
   load-balancer-subnets-ids = [module.subnets.subnets-id[0],module.subnets.subnets-id[2]]
   target_group_name = "proxy-target-group"
-  target_group_type = "ip"
+  target_group_type = "instance"
   instance_ids = {
     "machine1" = module.proxy-az1.id,
     "machine2" = module.proxy-az2.id
@@ -163,12 +163,12 @@ module "iti-private-load-balancer" {
   source = "./load-balancer"
   vpc-id = module.vpc.vpc-id
   load-balancer-name = "iti-private-lb"
-  load-balancer-SG = module.main-security-group.security-group-id
-  load-balancer-internal-choise = false
+  load-balancer-SG = ""
+  load-balancer-internal-choise = true
   load-balancer-type = "network"
   load-balancer-subnets-ids = [module.subnets.subnets-id[1],module.subnets.subnets-id[3]]
   target_group_name = "private-target-group"
-  target_group_type = "ip"
+  target_group_type = "instance"
   instance_ids = {
     "machine1" = module.private-az1.id,
     "machine2" = module.private-az2.id
