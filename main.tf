@@ -162,10 +162,10 @@ module "iti-public-load-balancer" {
 module "iti-private-load-balancer" {
   source = "./load-balancer"
   vpc-id = module.vpc.vpc-id
-  load-balancer-name = "iti-proxy-lb"
+  load-balancer-name = "iti-private-lb"
   load-balancer-SG = module.main-security-group.security-group-id
   load-balancer-internal-choise = false
-  load-balancer-type = "application"
+  load-balancer-type = "network"
   load-balancer-subnets-ids = [module.subnets.subnets-id[1],module.subnets.subnets-id[3]]
   target_group_name = "private-target-group"
   target_group_type = "ip"
