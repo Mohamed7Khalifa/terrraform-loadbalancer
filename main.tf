@@ -78,15 +78,87 @@ module "main-security-group" {
     "egress" = "-1"
   }
 }
-#------------------"load balancer"-----------------
-module "iti-load-balancer" {
+#------------------"proxy ec2"---------------------
+module "proxy-az1" {
+  ec2-metadata = {
+    "image" = "ami-06878d265978313ca"
+    "type" = "t2.micro"
+    "key_pair" = "nginx"
+  }
+  proxy-ec2-name = "proxy-az1" 
+  security_group-id = module.main-security-group.security-group-id
+  subnet-id =  module.subnets.subnets-id[0]
+  ec2_connection_type =  "ssh"
+  ec2_connection_user = "ubuntu"
+  ec2_connection_private_key = "./nginx.pem"
+  ec2_provisioner_file_source = "./nginx.sh"
+  ec2_provisioner_file_destination = "/tmp/nginx.sh"
+  ec2_provisioner_inline = ["chmod 777 /tmp/nginx.sh", "/tmp/nginx.sh ${module.iti-public-load-balancer.lb_public_dns}"]
+}
+#---
+module "proxy-az2" {
+  ec2-metadata = {
+    "image" = "ami-06878d265978313ca"
+    "type" = "t2.micro"
+    "key_pair" = "nginx"
+  }
+  proxy-ec2-name = "proxy-az2" 
+  security_group-id = module.main-security-group.security-group-id
+  subnet-id =  module.subnets.subnets-id[2]
+  ec2_connection_type =  "ssh"
+  ec2_connection_user = "ubuntu"
+  ec2_connection_private_key = "./nginx.pem"
+  ec2_provisioner_file_source = "./nginx.sh"
+  ec2_provisioner_file_destination = "/tmp/nginx.sh"
+  ec2_provisioner_inline = ["chmod 777 /tmp/nginx.sh", "/tmp/nginx.sh ${module.iti-public-load-balancer.lb_public_dns}"]
+}
+
+#------------------"private machine"-------------------
+module "private-az1" {
+  ec2-metadata = {
+    "image" = "ami-06878d265978313ca"
+    "type" = "t2.micro"
+    "key_pair" = "nginx"
+  }
+  private-ec2-name = "private-az1" 
+  security_group-id = module.main-security-group.security-group-id
+  subnet-id =  module.subnets.subnets-id[1]
+}
+#---
+module "private-az2" {
+  ec2-metadata = {
+    "image" = "ami-06878d265978313ca"
+    "type" = "t2.micro"
+    "key_pair" = "nginx"
+  }
+  private-ec2-name = "private-az2" 
+  security_group-id = module.main-security-group.security-group-id
+  subnet-id =  module.subnets.subnets-id[3]
+}
+#------------------"load balancer"---------------------
+module "iti-public-load-balancer" {
   source = "./load-balancer"
   vpc-id = module.vpc.vpc-id
   load-balancer-name = "iti-proxy-lb"
   load-balancer-SG = module.main-security-group.security-group-id
-  load-balancer-internal-choise = "false"
+  load-balancer-internal-choise = false
   load-balancer-type = "application"
   load-balancer-subnets = [module.subnets.subnets-id[0],module.subnets.subnets-id[2]]
   target_group_name = "proxy-target-group"
   target_group_type = "ip"
+  instance_ids = [module.proxy-az1.id,module.proxy-az2.id]
+}
+#-------------------"private lb"-------------------------
+module "iti-private-load-balancer" {
+  source = "./load-balancer"
+  vpc-id = module.vpc.vpc-id
+  load-balancer-name = "iti-proxy-lb"
+  load-balancer-SG = module.main-security-group.security-group-id
+  load-balancer-internal-choise = false
+  load-balancer-type = "application"
+  load-balancer-subnets = [module.subnets.subnets-id[1],module.subnets.subnets-id[3]]
+  target_group_name = "private-target-group"
+  target_group_type = "ip"
+  instance_ids = [module.private-az1.id,module.private-az2.id]
+
 }

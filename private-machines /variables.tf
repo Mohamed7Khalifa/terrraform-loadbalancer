@@ -5,9 +5,17 @@ variable "ec2-metadata" {
     "image" = "ami-06878d265978313ca"
     "type" = "t2.micro"
     "key_pair" = "nginx"
-    "machine-name" = "Private-az1-ec2"
   }
 }
+
+variable "private-ec2-name" {
+  type = string
+}
+
+variable "security_group-id"{
+  type = string
+}
+
 variable "subnet-id" {
-  type  = map
+  type = string
 }

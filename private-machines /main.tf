@@ -3,15 +3,15 @@ resource "aws_instance" "private-ec2" {
     instance_type = var.ec2-metadata["type"]
     key_name = var.ec2-metadata["key_pair"]
     subnet_id = var.subnet-id
-    security_groups = [aws_security_group.nginx-lab.id]
+    security_groups = [aws_security_group.security_group-id]
     tags = {
-      Name = var.ec2-metadata["machine-name"]
+      Name = var.private-ec2-name
     }
     user_data = <<-EOF
-          #!/bin/bash
-          sudo apt update -y
-          sudo apt install nginx -y
-          sudo systemctl enable --now nginx
+        #!/bin/bash
+        sudo apt update -y
+        sudo apt install nginx -y
+        sudo systemctl enable --now nginx
       EOF
 }
 
