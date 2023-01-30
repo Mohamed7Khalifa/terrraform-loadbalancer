@@ -12,7 +12,7 @@ resource "aws_alb_listener" "load-balancer-listener" {
   protocol         = "HTTP"
 
   default_action {
-    target_group_arn = aws_alb_target_group.lb_target_group.arn
+    target_group_arn = aws_alb_target_group.load-balancer-target-group.arn
     type             = "forward"
   }
 }
@@ -37,7 +37,4 @@ resource "aws_alb_target_group_attachment" "attach_target_group" {
   for_each = var.instance_ids
   target_id = each.value
   port = 80
-  depends_on = [
-    aws_lb_target_group.ec2_target
-  ]
 }

@@ -3,7 +3,7 @@ resource "aws_instance" "private-ec2" {
     instance_type = var.ec2-metadata["type"]
     key_name = var.ec2-metadata["key_pair"]
     subnet_id = var.subnet-id
-    security_groups = [aws_security_group.security_group-id]
+    security_groups = [var.security_group-id]
     tags = {
       Name = var.private-ec2-name
     }

@@ -13,7 +13,7 @@ variable "load-balancer-type" {
   type = string
 }
 
-variable "load-balancer-subnets" {
+variable "load-balancer-subnets-ids" {
   type = list
 }
 
@@ -29,5 +29,5 @@ variable "target_group_type" {
   type = string
 }
 variable "instance_ids" {
-  type = list
+  type = map
 }
